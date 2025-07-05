@@ -1,74 +1,56 @@
-name: 🐉 Dragon CI with Cowsay
+name: 🐧 Linux Shell CI with Cowsay
 
 on:
   push:
     branches: [main]
-  pull_request:
 
 jobs:
   stage-hatch:
-    name: 🥚 Hatch the Dragon (Install & Build)
+    name: 🥚 Hatch the Dragon
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Install cowsay
+        run: sudo apt-get update && sudo apt-get install -y cowsay
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
+      - name: Show system info
+        run: uname -a
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build the project
-        run: npm run build
-
-      - name: 🐮 Announce hatch
-        run: |
-          sudo apt-get update && sudo apt-get install -y cowsay
-          cowsay "Dragon hatched and built!"
+      - name: Announce hatch
+        run: cowsay "Stage 1: Hatch complete!"
 
   stage-test:
-    name: 🔥 Breathe Fire (Tests)
+    name: 🔥 Test the Fire
     runs-on: ubuntu-latest
     needs: stage-hatch
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Install cowsay
+        run: sudo apt-get update && sudo apt-get install -y cowsay
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run tests
-        run: npm test -- --coverage
-
-      - name: 🐮 Cowsay test results
+      - name: Simulate a test
         run: |
-          sudo apt-get update && sudo apt-get install -y cowsay
-          cowsay -f dragon "Tests complete!"
+          echo "Running shell test..."
+          echo "All tests passed ✔️"
+
+      - name: Celebrate tests
+        run: cowsay "Stage 2: Fire tests passed!"
 
   stage-deploy:
-    name: 🚀 Fly to Production
+    name: 🛫 Fly the Dragon (Deploy)
     runs-on: ubuntu-latest
     needs: stage-test
     if: github.ref == 'refs/heads/main'
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Install cowsay
+        run: sudo apt-get update && sudo apt-get install -y cowsay
 
-      - name: Fake Deploy Step
-        run: echo "🚀 Deploying application..."
-
-      - name: 🐮 Cow confirms deploy
+      - name: Fake deploy
         run: |
-          sudo apt-get update && sudo apt-get install -y cowsay
-          cowsay "Deployment successful!"
+          echo "Deploying with 🐧 Linux shell..."
+          sleep 2
+          echo "Deployment done 🚀"
+
+      - name: Final cowsay
+        run: cowsay -f tux "Stage 3: Deployed successfully!"
