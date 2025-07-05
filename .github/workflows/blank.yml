@@ -1,23 +1,61 @@
-name: First Job
-'on':
-  push:
-    branches:
-      - main
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Run 1
-        run: 'echo Hello'
-          test1:
-            runs-on: ubuntu-latest
-            steps:
-              - name: Run 2
-                run: 'echo world!'
-            test3:
-              runs-on: ubuntu-latest
-              steps:
-                - name: Run 2
-                  run: 'echo world!'
+name: Dragon CI
 
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  hatch: # 🥚 Stage 1: Hatch the code (Install & Build)
+    name: 🥚 Hatch the Dragon (Build)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🐣 Checkout
+        uses: actions/checkout@v3
+
+      - name: 🧪 Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: 🛠️ Install Dependencies
+        run: npm ci
+
+      - name: 🧱 Build
+        run: npm run build
+
+  breathe-fire: # 🔥 Stage 2: Breathe fire on bugs (Test)
+    name: 🔥 Breathe Fire (Test)
+    runs-on: ubuntu-latest
+    needs: hatch
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - run: npm ci
+      - run: npm test -- --coverage
+
+  sharpen-claws: # 🧼 Stage 3: Linting
+    name: 🧼 Sharpen Claws (Lint)
+    runs-on: ubuntu-latest
+    needs: breathe-fire
+
+    steps:
+      - uses: actions/checkout@v3
+      - run: npm ci
+      - run: npm run lint
+
+  fly: # 🛫 Stage 4: Deploy
+    name: 🛫 Fly to Production
+    runs-on: ubuntu-latest
+    needs: [sharpen-claws]
+
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - uses: actions/checkout@v3
+      - run: echo "🐉 Deploying the Dragon to Production..."
